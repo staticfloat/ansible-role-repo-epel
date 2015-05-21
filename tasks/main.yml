@@ -1,8 +1,11 @@
 ---
+- get_url: url="{{epel_repo_url}}" dest=/tmp/{{epel_repo_rpm}}
+
 - name: Install EPEL repo.
-  yum:
-    name: "{{ epel_repo_url }}"
-    state: present
+  command: rpm -iv /tmp/{{epel_repo_rpm}}
+  ignore_errors: yes
+
+- file: path=/tmp/{{epel_repo_rpm}} state=absent
 
 - name: Import EPEL GPG key.
   rpm_key:
