@@ -1,13 +1,22 @@
 ---
+
+- name: Check to see if EPEL repo already installed
+  stat: path=/etc/yum.repos.d/epel.repo
+  register: epelstat
+
 - get_url: url="{{epel_repo_url}}" dest=/tmp/{{epel_repo_rpm}}
+  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
 
 - name: Install EPEL repo.
   command: rpm -iv /tmp/{{epel_repo_rpm}}
   ignore_errors: yes
+  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
 
 - file: path=/tmp/{{epel_repo_rpm}} state=absent
+  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
 
 - name: Import EPEL GPG key.
   rpm_key:
     key: "{{ epel_repo_gpg_key_url }}"
     state: present
+  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
