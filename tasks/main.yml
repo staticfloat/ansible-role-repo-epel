@@ -5,18 +5,18 @@
   register: epelstat
 
 - get_url: url="{{epel_repo_url}}" dest=/tmp/{{epel_repo_rpm}}
-  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
+  when: epelstat.stat.exists is defined and (not epelstat.stat.exists)
 
 - name: Install EPEL repo.
   command: rpm -iv /tmp/{{epel_repo_rpm}}
   ignore_errors: yes
-  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
+  when: epelstat.stat.exists is defined and (not epelstat.stat.exists)
 
 - file: path=/tmp/{{epel_repo_rpm}} state=absent
-  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
+  when: epelstat.stat.exists is defined and (not epelstat.stat.exists)
 
 - name: Import EPEL GPG key.
   rpm_key:
     key: "{{ epel_repo_gpg_key_url }}"
     state: present
-  when: epelstat.stat.isfile is defined and (not epelstat.stat.isfile)
+  when: epelstat.stat.exists is defined and (not epelstat.stat.exists)
